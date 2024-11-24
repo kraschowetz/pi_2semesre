@@ -9,30 +9,31 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import com.climb.dao.ProdutoDAO;
+import com.climb.dao.UsuarioDAO;
 import com.climb.model.Produto;
+import com.climb.model.Usuario;
 
-@WebServlet(name="produtos", urlPatterns={"/produtos","/produtos/novo","/produtos/cadastro","/produtos/listar","/produtos/editar","/produtos/update","/produtos/excluir"})
-public class ProdutoController extends HttpServlet {
+@WebServlet(name="usuarios", urlPatterns={"/usuarios","/usuarios/novo","/usuarios/cadastro","/usuarios/listar","/usuarios/editar","/usuarios/update","/usuarios/excluir"})
+public class UsuarioController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    private ProdutoDAO dao = null;
+    private UsuarioDAO dao = null;
     
     private void listar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
-    	ArrayList<Produto> lista = dao.listar();
+    	ArrayList<Usuario> lista = dao.listar();
     	request.setAttribute("lista", lista);
-    	RequestDispatcher dispatcher = request.getRequestDispatcher("/views/produtos/produtos-listar.jsp");
+    	RequestDispatcher dispatcher = request.getRequestDispatcher("/views/usuarios/usuarios-listar.jsp");
     	dispatcher.forward(request, response);
     }
     
     private void novo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String nome = request.getParameter("nome");
-		float preco = Float.parseFloat(request.getParameter("preco"));
-		String categoria = request.getParameter("categoria");
-		int estoque = Integer.parseInt(request.getParameter("estoque"));
+		String tipo = request.getParameter("tipo");
+		String email = request.getParameter("email");
+		String senha = request.getParameter("senha");
 		
-		if(nome != null && categoria != null && estoque > 0 && preco > 0) {
-			Produto produto = new Produto(0, preco, nome, categoria, estoque); //sql vai sobrescrever o id, eu espero
-			dao.insert(produto);
+		if(nome != null && tipo != null && email != null && senha != null) {
+			Usuario user = new Usuario(0, nome, tipo, email, senha); //sql vai sobrescrever o id, eu espero
+			dao.insert(user);
 		}
 		
 		try {
@@ -44,36 +45,36 @@ public class ProdutoController extends HttpServlet {
 	}
     
     private void editar(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
-		int id = Integer.parseInt(request.getParameter("id_produto"));
-		Produto alter = dao.buscarPorID(id);
+		int id = Integer.parseInt(request.getParameter("id_usuario"));
+		Usuario alter = dao.buscarPorID(id);
 		
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/views/produtos/produto-cadastro.jsp");
-		request.setAttribute("produto", alter);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/views/usuarios/usuario-cadastro.jsp");
+		request.setAttribute("usuario", alter);
 		dispatcher.forward(request, response);
 	}
     
     private void update(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
-		int id = Integer.parseInt(request.getParameter("id_produto"));
+		int id = Integer.parseInt(request.getParameter("id_usuario"));
 		String nome = request.getParameter("nome");
-		float preco = Float.parseFloat(request.getParameter("preco"));
-		String categoria = request.getParameter("categoria");
-		int estoque = Integer.parseInt(request.getParameter("estoque"));
+		String tipo = request.getParameter("tipo");
+		String email = request.getParameter("email");
+		String senha = request.getParameter("senha");
 		
-		Produto alter = new Produto(id, preco, nome, categoria, estoque);
+		Usuario alter = new Usuario(id, nome, tipo, email, senha);
 		
 		dao.atualizar(alter);
 		response.sendRedirect("listar");
 	}
     
     private void excluir(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		int id = Integer.parseInt(request.getParameter("id_produto"));
+		int id = Integer.parseInt(request.getParameter("id_usuario"));
 		dao.excluir(id);
 		response.sendRedirect("listar");
 	}
     
-    public ProdutoController() {
+    public UsuarioController() {
         super();
-        dao = new ProdutoDAO();
+        dao = new UsuarioDAO();
     }
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -81,23 +82,23 @@ public class ProdutoController extends HttpServlet {
 		
 		try {
 			switch(action) {
-				case "/produtos/novo":
+				case "/usuarios/novo":
 					novo(request, response);
 					break;
-				case "/produtos/listar":
+				case "/usuarios/listar":
 					listar(request, response);
 					break;
-				case "/produtos/cadastro":
-					RequestDispatcher dispatcher = request.getRequestDispatcher("/views/produtos/produto-cadastro.jsp");
+				case "/usuarios/cadastro":
+					RequestDispatcher dispatcher = request.getRequestDispatcher("/views/usuarios/usuario-cadastro.jsp");
 					dispatcher.forward(request, response);
 					break;
-				case "/produtos/excluir":
+				case "/usuarios/excluir":
 					excluir(request, response);
 					break;
-				case "/produtos/editar":
+				case "/usuarios/editar":
 					editar(request, response);
 					break;
-				case "/produtos/update":
+				case "/usuarios/update":
 					update(request, response);
 					break;
 			}
