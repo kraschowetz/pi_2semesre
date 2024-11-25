@@ -94,6 +94,34 @@ public class UsuarioDAO {
 		return user;
 	}
 	
+	public Usuario bucarPorEmail(String email) {
+		Usuario user = null;
+		String sql = "SELECT * FROM usuarios WHERE email = ?;";
+		
+		try {
+			Connection connection = ConnectionFactory.getConnection();
+			PreparedStatement ps = connection.prepareStatement(sql);
+			
+			ps.setString(1, email);
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				int id = rs.getInt("id_usuario");
+				String nome = rs.getString("nome");
+				String tipo = rs.getString("tipo");
+				String _email = rs.getString("email");
+				String senha = rs.getString("senha");
+				
+				user = new Usuario(id, nome, tipo, _email, senha);
+			}
+		}
+		catch(SQLException ex) {
+			ex.printStackTrace();
+		}
+		
+		return user;
+	}
+	
 	public boolean atualizar(Usuario user) {
 		try {
 			String sql = "UPDATE usuarios SET nome=?, tipo=?, email=?, senha=? WHERE id_usuario=?;";

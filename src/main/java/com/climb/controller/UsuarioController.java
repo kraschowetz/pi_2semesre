@@ -6,6 +6,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import com.climb.dao.UsuarioDAO;
 import com.climb.model.Produto;
 import com.climb.model.Usuario;
 
-@WebServlet(name="usuarios", urlPatterns={"/usuarios","/usuarios/novo","/usuarios/cadastro","/usuarios/listar","/usuarios/editar","/usuarios/update","/usuarios/excluir"})
+@WebServlet(name="usuarios", urlPatterns={"/usuarios","/usuarios/novo","/usuarios/cadastro","/usuarios/listar","/usuarios/editar","/usuarios/update","/usuarios/excluir", "/usuarios/login", "/usuarios/logout"})
 public class UsuarioController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private UsuarioDAO dao = null;
@@ -47,7 +49,7 @@ public class UsuarioController extends HttpServlet {
     private void editar(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
 		int id = Integer.parseInt(request.getParameter("id_usuario"));
 		Usuario alter = dao.buscarPorID(id);
-		
+
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/views/usuarios/usuario-cadastro.jsp");
 		request.setAttribute("usuario", alter);
 		dispatcher.forward(request, response);
@@ -72,6 +74,36 @@ public class UsuarioController extends HttpServlet {
 		response.sendRedirect("listar");
 	}
     
+    private void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	Usuario loginUser = dao.bucarPorEmail(request.getParameter("login_email"));
+    	HttpSession session = request.getSession();
+    	String senha = request.getParameter("login_senha");
+    	
+    	if(loginUser == null) {
+    		response.sendRedirect("/Climb/index.jsp");
+    		return;
+    	}
+    	
+    	if(!loginUser.getSenha().equals(senha)) {
+    		response.sendRedirect("/Climb/index.jsp");
+			// response.sendRedirect("https://" + loginUser.getSenha() + "--" + senha); <- forma grotesca, mas eficiente (eu acho) de debugar usuario & senha
+			return;
+    	}
+    	
+		session.setAttribute("adm", loginUser.getTipo().equals("adm") ? true : false);
+		session.setAttribute("user", loginUser);
+    	response.sendRedirect("/Climb/index.jsp");
+    	
+    }
+    
+    private void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	HttpSession session = request.getSession();
+		session.setAttribute("adm", false);
+		session.setAttribute("user", null);
+
+    	response.sendRedirect("/Climb/index.jsp");
+    }
+    
     public UsuarioController() {
         super();
         dao = new UsuarioDAO();
@@ -79,6 +111,7 @@ public class UsuarioController extends HttpServlet {
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getServletPath();
+		RequestDispatcher dispatcher;
 		
 		try {
 			switch(action) {
@@ -89,7 +122,7 @@ public class UsuarioController extends HttpServlet {
 					listar(request, response);
 					break;
 				case "/usuarios/cadastro":
-					RequestDispatcher dispatcher = request.getRequestDispatcher("/views/usuarios/usuario-cadastro.jsp");
+					dispatcher = request.getRequestDispatcher("/views/usuarios/usuario-cadastro.jsp");
 					dispatcher.forward(request, response);
 					break;
 				case "/usuarios/excluir":
@@ -100,6 +133,12 @@ public class UsuarioController extends HttpServlet {
 					break;
 				case "/usuarios/update":
 					update(request, response);
+					break;
+				case "/usuarios/login":
+					login(request, response);
+					break;
+				case "/usuarios/logout":
+					logout(request, response);
 					break;
 			}
 		}
@@ -112,3 +151,20 @@ public class UsuarioController extends HttpServlet {
 		doGet(request, response);
 	}
 }
+
+/*
+    	if(loginUser != null) {
+			if(loginUser.getSenha() == senha) {
+				request.setAttribute("looged", true);
+				RequestDispatcher dispatcher = request.getRequestDispatcher("/area-adm.jsp");
+				dispatcher.forward(request, response);
+				return;
+			}
+    	}
+		try {
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
+			dispatcher.forward(request, response);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+*/

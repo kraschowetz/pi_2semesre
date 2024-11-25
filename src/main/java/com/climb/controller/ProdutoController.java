@@ -12,15 +12,23 @@ import java.util.ArrayList;
 import com.climb.dao.ProdutoDAO;
 import com.climb.model.Produto;
 
-@WebServlet(name="produtos", urlPatterns={"/produtos","/produtos/novo","/produtos/cadastro","/produtos/listar","/produtos/editar","/produtos/update","/produtos/excluir"})
+@WebServlet(name="produtos", urlPatterns={"/produtos","/produtos/novo","/produtos/cadastro","/produtos/listar","/produtos/editar","/produtos/update","/produtos/excluir", "/produtos/catalogo"})
 public class ProdutoController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private ProdutoDAO dao = null;
     
-    private void listar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException{
+    private void listar(HttpServletRequest request, HttpServletResponse response, boolean adm) throws ServletException, IOException, SQLException{
     	ArrayList<Produto> lista = dao.listar();
     	request.setAttribute("lista", lista);
-    	RequestDispatcher dispatcher = request.getRequestDispatcher("/views/produtos/produtos-listar.jsp");
+    	RequestDispatcher dispatcher;
+    	
+    	if(adm) {
+			dispatcher = request.getRequestDispatcher("/views/produtos/produtos-listar.jsp");
+    	}
+    	else {
+			dispatcher = request.getRequestDispatcher("/catalogo.jsp");
+			System.out.println("falso");
+    	}
     	dispatcher.forward(request, response);
     }
     
@@ -36,7 +44,7 @@ public class ProdutoController extends HttpServlet {
 		}
 		
 		try {
-			listar(request, response);
+			listar(request, response, true);
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
@@ -85,7 +93,7 @@ public class ProdutoController extends HttpServlet {
 					novo(request, response);
 					break;
 				case "/produtos/listar":
-					listar(request, response);
+					listar(request, response, true);
 					break;
 				case "/produtos/cadastro":
 					RequestDispatcher dispatcher = request.getRequestDispatcher("/views/produtos/produto-cadastro.jsp");
@@ -99,6 +107,9 @@ public class ProdutoController extends HttpServlet {
 					break;
 				case "/produtos/update":
 					update(request, response);
+					break;
+				case "/produtos/catalogo":
+					listar(request, response, false);
 					break;
 			}
 		}

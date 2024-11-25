@@ -11,13 +11,15 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Página Inicial</title>
-	<link rel="stylesheet" type="text/css" href="css/styles.css">
+	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/styles.css">
 </head>
 
 <body>
 	<jsp:include page="/includes/menu.jsp"></jsp:include>
 	
 	<h1>página inicial</h1>
+	
+	<a href="${pageContext.request.contextPath}/produtos/catalogo">compre compre compre!</a>
 
 	<jsp:include page="/includes/footer.jsp"></jsp:include>
 </body>
