@@ -1,0 +1,125 @@
+/* Reset básico */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f4f4f4;
+	color: #333;
+}
+
+/* Cabeçalho */
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background-color: #23395d;
+	color: #fff;
+	padding: 10px 20px;
+}
+
+.logo {
+	font-size: 24px;
+	font-weight: bold;
+}
+
+.navbar a {
+	color: #fff;
+	margin-left: 15px;
+	text-decoration: none;
+}
+
+.admin-icon {
+	font-weight: bold;
+}
+
+/* Container principal */
+.container {
+	max-width: 1200px;
+	margin: 20px auto;
+	padding: 20px;
+	background-color: #fff;
+	border-radius: 8px;
+}
+
+h1 {
+	margin-bottom: 20px;
+}
+
+.actions {
+	text-align: right;
+	margin-bottom: 15px;
+}
+
+.new-product-btn {
+	background-color: #ff6363;
+	color: #fff;
+	border: none;
+	padding: 10px 15px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.product-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 20px;
+}
+
+.product-card {
+	background: #eaeaea;
+	padding: 10px;
+	text-align: center;
+	border-radius: 8px;
+	transition: transform 0.2s;
+}
+
+.product-card img {
+	max-width: 100%;
+	border-radius: 8px;
+	margin-bottom: 10px;
+}
+
+.product-card h2 {
+	font-size: 18px;
+	margin-bottom: 5px;
+}
+
+.product-card p {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.product-card:hover {
+	transform: scale(1.05);
+}
+
+.pagination {
+	text-align: center;
+	margin-top: 20px;
+	margin-bottom: 14em;
+}
+
+.pagination a {
+	text-decoration: none;
+	color: #23395d;
+	font-weight: bold;
+}
+
+/* Rodapé */
+.footer {
+	background: #23395d;
+	color: #fff;
+	text-align: center;
+	padding: 10px 0;
+	margin-top: 20px;
+}
+
+.footer .social-links a {
+	color: #fff;
+	margin: 0 10px;
+	text-decoration: none;
+}
