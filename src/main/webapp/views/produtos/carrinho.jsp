@@ -1,4 +1,4 @@
-<%@ 
+<%@
 	page language="java"
 	contentType="text/html;charset=UTF-8"
     pageEncoding="UTF-8"
@@ -12,19 +12,14 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Página Inicial</title>
+	<title>Lista de Produtos</title>
 	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/styles.css">
 </head>
 
 <body>
-	<jsp:include page="/includes/menu.jsp"></jsp:include>
+	<jsp:include page="../../includes/menu.jsp"></jsp:include>
 	
-	<h1>catálogo</h1>
-
-	<c:if test="${err_estoque}">
-		<p>estoque insuficiente!</p>	
-	</c:if>	
-
+	<h1>Carrinho</h1>
 	<table>
 		<thead>
 			<tr>
@@ -42,13 +37,16 @@
 					<td>${produto.preco}</td>
 					<td>${produto.estoque}</td>
 					<td>
-						<a href="item-carrinho?id_produto=${produto.idProduto}">Adicionar ao carrinho</a>
+						<a href="remover?id_produto=${produto.idProduto}">Remover</a>
 					</td>
 				</tr>
 			</c:forEach>
 		</tbody>
 	</table>
-	<jsp:include page="/includes/footer.jsp"></jsp:include>
+	
+	<br>
+
+	<jsp:include page="../../includes/footer.jsp"></jsp:include>
 </body>
 
 </html>
